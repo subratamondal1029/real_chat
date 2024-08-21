@@ -1,0 +1,25 @@
+header{
+    background-color: #1b1b1b;
+    color: var(--primary-color);
+    height: 100vh;
+    width: 100px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    gap: 50px;
+    padding-top: 20px;
+}
+
+.headerBtn{
+    border-radius: 9999px;
+}
+
+.headerBtn:last-child{
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+.light header{
+    background-color: #ebebeb;
+}

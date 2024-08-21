@@ -1,0 +1,120 @@
+#contactSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 100vh;
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  background-color: #1b1b1b;
+  color: var(--primary-color);
+  border-left: 1px solid var(--primary-color);
+  padding-top: 10px;
+}
+
+.light #contactSection {
+  background-color: #ebebeb;
+}
+
+#searchField {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#searchField input {
+  font-size: 17px;
+  width: 100%;
+  padding: 9px 20px;
+  border-radius: 9999px;
+  border: 1px solid var(--primary-color);
+  background-color: var(--primary-background-color);
+  position: relative;
+  color: var(--primary-color);
+  z-index: 10;
+}
+
+#searchField button {
+  position: relative;
+  border-radius: 0 9999px 9999px 0;
+  padding: 7px 20px;
+  z-index: 9;
+  background-color: var(--primary-background-color);
+}
+
+#searchField button::after {
+  content: "";
+  position: absolute;
+  top: -0.9px;
+  right: 50%;
+  background-color: var(--primary-background-color);
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  z-index: -1;
+  padding-block: 0.3px 1.1px;
+}
+
+#searchField button:hover::after,
+#searchField button:hover {
+  background-color: #1b1b1b;
+  color: white;
+  border-color: transparent;
+}
+
+.contactList {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  gap: 20px;
+}
+
+#contactSection .contact {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #1e1e1e;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+#contactSection .contact:hover {
+  background-color: #242424;
+}
+
+.light #contactSection .contact {
+  background-color: #e7e7e7;
+}
+.light #contactSection .contact:hover {
+  background-color: #dfdfdf;
+}
+
+#contactSection .contact img {
+  width: 50px;
+  height: 50px;
+  margin-right: 15px;
+  object-fit: cover;
+  border-radius: 9999px;
+}
+
+#contactSection .contact p:last-child {
+  margin-left: auto;
+  font-size: 13px;
+  margin-right: 10px;
+}
+
+.recentMessage{
+    max-width: 160px;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
