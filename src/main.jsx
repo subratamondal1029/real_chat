@@ -8,13 +8,16 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import {Home} from "./pages";
+import {Home, Login, Profile, ProtectedRoute, Signup} from "./pages";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(<Route path="/" element={<App />}>
-    <Route path="" element={<Home />} />
+    <Route path="" element={<ProtectedRoute auth={true}><Home /></ProtectedRoute>} />
+    <Route path="profile" element={<ProtectedRoute auth={true}><Profile /></ProtectedRoute>} />
+    <Route path="login" element={<Login />} />
+    <Route path="signup" element={<Signup />} />
   </Route>)
 );
 

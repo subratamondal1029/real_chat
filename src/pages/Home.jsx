@@ -2,6 +2,10 @@ import { Search } from "lucide-react"
 import "../Css/home.css"
 
 const Home = () => {
+  const displayElm = {
+
+  }
+  
   return (
     <div id="contactSection">
       <form id="searchField">

@@ -20,6 +20,11 @@ header{
     margin-bottom: 20px;
 }
 
+.active .headerBtn{
+    color: blueviolet;
+    border-color: #646cff;
+}
+
 .light header{
     background-color: #ebebeb;
 }
