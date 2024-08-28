@@ -20,7 +20,7 @@ class authConfig {
     try {
       // Create user account
       const userAccount = await this.account.create(
-        ID.unique(),
+        username,
         email,
         password,
         fullName
@@ -32,7 +32,6 @@ class authConfig {
           fullName,
           username,
           email,
-          userId: userAccount.$id,
           password, // Pass the password to storeinDataBase
         });
 
@@ -44,7 +43,7 @@ class authConfig {
     }
   }
 
-  async storeinDataBase({ fullName, username, email, userId, password }) {
+  async storeinDataBase({ fullName, username, email, password }) {
     try {
       // Create session for the newly created user
       await this.account.createEmailPasswordSession(email, password);
@@ -53,7 +52,7 @@ class authConfig {
       const userData = await this.database.createDocument(
         databaseId,
         usersCollectionId,
-        userId,
+        username,
         {
           fullName,
           username,
