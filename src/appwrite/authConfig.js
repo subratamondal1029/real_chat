@@ -1,6 +1,7 @@
 import { Account, Client, ID, Databases } from "appwrite";
 import {
   databaseId,
+  messagesCollectionId,
   projectEndpoint,
   projectId,
   usersCollectionId,
@@ -110,6 +111,16 @@ class authConfig {
     } catch (error) {
       console.error("Logout error:", error.message);
       throw error.message;
+    }
+  }
+
+  async getUserData(userId){
+    try {
+      const userData = await this.database.getDocument(databaseId, usersCollectionId, userId);
+      return userData;
+    } catch (error) {
+      console.log("Get user data error:", error);
+      throw error
     }
   }
 }
