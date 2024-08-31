@@ -5,6 +5,7 @@ import "../Css/Header.css";
 import authService from "../appwrite/authConfig";
 import { logoutData } from "../store/authSlice";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Header = () => {
   const { theme } = useSelector((state) => state.theme);
@@ -12,8 +13,11 @@ const Header = () => {
   const navigate = useNavigate();
   const toggleTheme = () => {
     dispatch(setTheme(theme === "light" ? "dark" : "light"));
-    document.documentElement.classList.toggle("light");
   };
+
+  useEffect(() => {
+    document.documentElement.className = theme;
+  },[theme])
 
   const Logout = () => {
     authService.logout().then(() => {

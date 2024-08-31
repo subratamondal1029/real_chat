@@ -43,7 +43,7 @@ const Home = () => {
       fullName: searchUser.fullName,
       messages: [],
     };
-    setCurrentMessage(messageObj); //TODO: remove after making it state base
+    setCurrentMessage(messageObj); 
     setSearchUser(null);
     setSearchUsername("");
   };
@@ -79,7 +79,7 @@ const Home = () => {
           newMessage.lastMessagetime = new Date(
             response.$updatedAt
           ).toLocaleDateString();
-          setCurrentMessage(newMessage); //TODO: remove after making it state base
+          setCurrentMessage(newMessage); 
           dispath(setNewConversation(newMessage));
           setMessage("");
         }

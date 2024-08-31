@@ -12,6 +12,10 @@ header{
 }
 
 .headerBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: .8em;
     border-radius: 9999px;
 }
 
