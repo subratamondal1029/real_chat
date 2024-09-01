@@ -123,6 +123,26 @@ class authConfig {
       throw error
     }
   }
+
+  async updateName(name){
+    try {
+      const changeName = await this.account.updateName(name)
+     const userData = await this.database.updateDocument(databaseId, usersCollectionId, changeName.$id, {fullName: name})
+      return userData
+    } catch (error) {
+      throw error.message
+    }
+  }
+
+  async updateEmail(email, password){
+    try {
+      const changeEmail = await this.account.updateEmail(email, password)
+      const userData = await this.database.updateDocument(databaseId, usersCollectionId, changeEmail.$id, {email: email})
+      return userData
+    } catch (error) {
+      throw error.message
+    }
+  }
 }
 
 const authService = new authConfig();

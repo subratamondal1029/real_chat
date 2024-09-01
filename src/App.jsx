@@ -52,44 +52,43 @@ function App() {
         let currentUserData = userData;
         if (!userData) {
           currentUserData = await authService.getCurrentUser();
-        }
+        } 
 
-        if (currentUserData) {
-          dispatch(loginData(currentUserData));
-          navigate("/");
-
-          const messageResponse = await messageService.getAllConversations(
-            currentUserData.$id
-          );
-          if (messageResponse) {
-            const allConversationPromise = messageResponse.map(
-              async (conversation) => {
-                const { userId: username, fullName } = await getUser(
-                  conversation.contact1,
-                  conversation.contact2,
-                  currentUserData.$id
-                );
-
-                const messageObj = {
-                  username,
-                  fullName,
-                  messageId: conversation.$id,
-                  messages: conversation.message.map((msg) => JSON.parse(msg)),
-                  lastMessagetime: new Date(
-                    conversation.$updatedAt
-                  ).toLocaleDateString(),
-                };
-
-                return messageObj;
-              }
+          if(currentUserData && !userData){ 
+            dispatch(loginData(currentUserData));
+            const messageResponse = await messageService.getAllConversations(
+              currentUserData.$id
             );
-
-            const data = await Promise.all(allConversationPromise);
-            dispatch(setAllMessages(data));
-
-            messageService.subscribeToRealtimeEvents(handleRealtime, currentUserData.$id);
-          } else throw new Error("Something went wrong with message response");
-        } else throw new Error("Something went wrong with current user data");
+            if (messageResponse) {
+              const allConversationPromise = messageResponse.map(
+                async (conversation) => {
+                  const { userId: username, fullName } = await getUser(
+                    conversation.contact1,
+                    conversation.contact2,
+                    currentUserData.$id
+                  );
+  
+                  const messageObj = {
+                    username,
+                    fullName,
+                    messageId: conversation.$id,
+                    messages: conversation.message.map((msg) => JSON.parse(msg)),
+                    lastMessagetime: new Date(
+                      conversation.$updatedAt
+                    ).toLocaleDateString(),
+                  };
+  
+                  return messageObj;
+                }
+              );
+  
+              const data = await Promise.all(allConversationPromise);
+              dispatch(setAllMessages(data));
+  
+              messageService.subscribeToRealtimeEvents(handleRealtime, currentUserData.$id);
+            } 
+            navigate("/");
+          }
       } catch (error) {
         console.error(error);
       }
