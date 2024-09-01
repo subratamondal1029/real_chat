@@ -16,6 +16,7 @@ const Home = () => {
   const [message, setMessage] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [searchUsername, setSearchUsername] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispath = useDispatch();
 
@@ -44,17 +45,14 @@ const Home = () => {
       fullName: searchUser.fullName,
       messages: [],
     };
-    setCurrentMessage(messageObj); 
+    setCurrentMessage(messageObj);
     setSearchUser(null);
     setSearchUsername("");
   };
 
   const sendMessage = async () => {
-    if (message === "") {
-      alert("Enter a message");
-      return;
-    }
-
+    if (message === "") return;
+    setIsLoading(true);
     const newMessage = {
       ...currentMessage,
       messages: [
@@ -70,7 +68,7 @@ const Home = () => {
     try {
       if (!currentMessage.lastMessagetime) {
         const response = await messageService.sendMessage(
-          {message: newMessage.messages},
+          { message: newMessage.messages },
           "create",
           currentUser.username,
           newMessage.username
@@ -80,15 +78,20 @@ const Home = () => {
           newMessage.lastMessagetime = new Date(
             response.$updatedAt
           ).toLocaleDateString();
-          setCurrentMessage(newMessage); 
+          setCurrentMessage(newMessage);
           dispath(setNewConversation(newMessage));
           setMessage("");
         }
-
+        setIsLoading(false);
         return;
       }
 
-      const response = await messageService.sendMessage({message: newMessage.messages, messageId: newMessage.messageId}, "update", currentUser.username, newMessage.username);
+      const response = await messageService.sendMessage(
+        { message: newMessage.messages, messageId: newMessage.messageId },
+        "update",
+        currentUser.username,
+        newMessage.username
+      );
       if (response) {
         newMessage.lastMessagetime = new Date(
           response.$updatedAt
@@ -104,24 +107,37 @@ const Home = () => {
         setMessage("");
       }
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     setCurrentMessage((prev) => {
-      return allMessages.find((message) => message.messageId === prev?.messageId) || prev
-    })
-  },[allMessages, currentMessage])
+      return (
+        allMessages.find((message) => message.messageId === prev?.messageId) ||
+        prev
+      );
+    });
+  }, [allMessages, currentMessage]);
 
   useEffect(() => {
     window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
-    return () => window.removeEventListener("resize", () => setWindowWidth(window.innerWidth));
-  },[])
+    return () =>
+      window.removeEventListener("resize", () =>
+        setWindowWidth(window.innerWidth)
+      );
+  }, []);
 
   return (
     <div id="mainContainer">
-      <div id="contactSection" style={{display: windowWidth < 920 && currentMessage ? "none" : "block"}}>
+      <div
+        id="contactSection"
+        style={{
+          display: windowWidth < 920 && currentMessage ? "none" : "block",
+        }}
+      >
         <form
           id="searchField"
           onSubmit={(e) => {
@@ -196,7 +212,11 @@ const Home = () => {
               onChange={(e) => setMessage(e.target.value)}
               maxLength="999"
             ></textarea>
-            <button onClick={sendMessage}>
+            <button
+              onClick={sendMessage}
+              disabled={isLoading}
+              style={{ opacity: isLoading ? 0.5 : 1 }}
+            >
               <Send size={20} />
             </button>
 
