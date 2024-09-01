@@ -14,6 +14,7 @@ const Home = () => {
   const [currentMessage, setCurrentMessage] = useState(null);
   const [searchUser, setSearchUser] = useState(null);
   const [message, setMessage] = useState("");
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [searchUsername, setSearchUsername] = useState("");
 
   const dispath = useDispatch();
@@ -113,9 +114,14 @@ const Home = () => {
     })
   },[allMessages, currentMessage])
 
+  useEffect(() => {
+    window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
+    return () => window.removeEventListener("resize", () => setWindowWidth(window.innerWidth));
+  },[])
+
   return (
     <div id="mainContainer">
-      <div id="contactSection">
+      <div id="contactSection" style={{display: windowWidth < 920 && currentMessage ? "none" : "block"}}>
         <form
           id="searchField"
           onSubmit={(e) => {

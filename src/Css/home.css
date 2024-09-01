@@ -83,7 +83,6 @@
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
-  height: 100%;
   width: 100%;
 }
 
@@ -244,6 +243,18 @@
 .messageField .wordCount{
   position: absolute;
   user-select: none;
-  bottom: 0;
+  bottom: 4px;
   right: 0;
+}
+
+@media screen and (max-width: 500px) {
+ .messageHeader{flex-direction: column;}
+ .conversetionCon{
+  height: calc(100vh - 187px);
+ }
+
+ .recieverName{
+ margin-top: -20px;
+ margin-left: 25px;
+ }
 }
