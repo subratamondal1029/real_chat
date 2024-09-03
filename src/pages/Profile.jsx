@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../Css/Profile.css";
 import { useDispatch, useSelector } from "react-redux";
 import avaterImage from "../assets/images/userAvter.png";
@@ -10,15 +10,33 @@ import { loginData } from "../store/authSlice";
 const Profile = () => {
   const userData = useSelector((state) => state.auth.userData);
   const resizerConRef = useRef(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageUrl, setImageUrl] = useState(userData?.imageUrl || avaterImage);
+  const inputRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [updating, setUpdating] = useState({
     isUpdating: false,
     updateValue: "",
     updateField: "",
+    type: "text",
   });
   const [sending, setSending] = useState(false);
   const [passwordVal, setPasswordVal] = useState("");
   const [error, setError] = useState("");
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if(userData.imageId && !userData.imageUrl) {
+      getProfileImage(userData.imageId);
+    }
+  },[])
+
+  function getProfileImage(imageId) {
+    console.log("Get profile image");
+    const profileImage = authService.getImage(imageId, {w: 300, h: 300})
+    setImageUrl(profileImage)
+    dispatch(loginData({ ...userData, imageUrl: profileImage }));
+  }
 
   const resize = (e) => {
     const startX = e.clientX;
@@ -37,18 +55,26 @@ const Profile = () => {
   };
 
   const openPopup = (name) => {
-    setUpdating((prev) => ({
+    setUpdating(() => ({
       updateField: name,
       updateValue: userData[name],
       isUpdating: true,
+      type: name === "email" ? "email" : "text",
     }));
+
     window.addEventListener("keyup", closePopup);
   };
 
   const closePopup = (e) => {
     if (e.target.className.includes("popupOverlay") || e.key === "Escape") {
       setError("");
-      setUpdating({ updateField: "", updateValue: "", isUpdating: false });
+      setUpdating({
+        updateField: "",
+        updateValue: "",
+        type: "text",
+        isUpdating: false,
+      });
+      setPasswordVal("");
       window.removeEventListener("keyup", closePopup);
     }
   };
@@ -74,7 +100,8 @@ const Profile = () => {
         if (passwordVal.trim().length >= 8) {
           setError("");
           return await authService.updateEmail(updateValue, passwordVal.trim());
-        } else throw new Error("Password must be at least 8 characters").message;
+        } else
+          throw new Error("Password must be at least 8 characters").message;
       }
     }
 
@@ -91,8 +118,12 @@ const Profile = () => {
     try {
       const updated = await validate(updateField, updateValue);
       if (updated) {
-        console.log(updated);
-        setUpdating({ updateField: "", updateValue: "", isUpdating: false });
+        setUpdating({
+          updateField: "",
+          updateValue: "",
+          type: "text",
+          isUpdating: false,
+        });
         dispatch(loginData(updated));
       }
     } catch (error) {
@@ -102,11 +133,73 @@ const Profile = () => {
     setSending(false);
   };
 
+  const handleImageChange = async (e) => {
+    try {
+      const file = e.target.files[0];
+
+      if (!file) {
+        throw new Error("Please select an image").message;
+      }
+      const extaintion = file.name.split(".")[1];
+      if (
+        extaintion !== "jpg" &&
+        extaintion !== "jpeg" &&
+        extaintion !== "png"
+      ) {
+        throw new Error("Please select only jpg, jpeg and png image").message;
+      }
+
+      const size = file.size / 1024 / 1024;
+      if (size > 5) {
+        throw new Error("Please select image less than 5MB").message;
+      }
+
+      const fileUrl = URL.createObjectURL(file);
+      setImagePreview(fileUrl);
+    } catch (error) {
+      console.error(error); // TODO: Display error message
+    }
+  };
+
+  const uploadImage = async () => {
+    setIsUploading(true);
+    try {
+      const file = inputRef.current.files[0];
+      const updateData = await authService.updateImage(
+        userData.imageId,
+        userData.$id,
+        file,
+        "create"
+      );
+      dispatch(loginData(updateData));
+      getProfileImage(updateData.imageId);
+      setImagePreview(null);
+      inputRef.current.value = "";
+    } catch (error) {
+      console.error(error);
+    }
+    setIsUploading(false);
+  };
+
   return (
     <div className="profileContainer" ref={resizerConRef}>
       <div className="profileImage">
-        <img src={avaterImage} alt="Profile Picture" />
-        <ImageUp size={20} className="editBtn" />
+        <img src={imageUrl} alt="Profile Picture" />
+        <label htmlFor="profilePhoto">
+          <ImageUp size={20} className="editBtn" />
+        </label>
+        <input
+          type="file"
+          id="profilePhoto"
+          accept="image/*"
+          ref={inputRef}
+          onChange={handleImageChange}
+          style={{
+            position: "absolute",
+            zIndex: -1,
+            opacity: 0,
+          }}
+        />
       </div>
       <ProfileDetail
         editValue={userData.fullName}
@@ -129,26 +222,25 @@ const Profile = () => {
         startEdit={openPopup}
       />
 
-      {/* Profile Con Reziser */}
       {updating.isUpdating && (
         <div className="popupOverlay" onClick={closePopup}>
           <form className="popup" onSubmit={handleChange}>
             <Input
               label={`New ${
-                updating.updateField === "fullName"
+                updating?.updateField === "fullName"
                   ? "Name"
-                  : updating.updateField
+                  : updating?.updateField
               }`}
-              value={updating.updateValue}
-              onChange={(e) =>
+              value={updating?.updateValue}
+              onChange={(e) => {
                 setUpdating((prev) => ({
                   ...prev,
                   updateValue: e.target.value,
-                }))
-              }
-              type={updating.updateField === "email" ? "email" : "text"}
+                }));
+              }}
+              type={updating.type}
             />
-            {updating.updateField === "email" && (
+            {updating?.updateField === "email" && (
               <Input
                 label={"Password"}
                 type="password"
@@ -168,6 +260,38 @@ const Profile = () => {
           </form>
         </div>
       )}
+
+      {imagePreview && (
+        <div
+          className="popupOverlay"
+          id="imagePreview"
+          onClick={(e) => {
+            if (e.target.id === "imagePreview") {
+              setImagePreview(null);
+              inputRef.current.value = "";
+            }
+          }}
+        >
+          <img src={imagePreview} alt="Preview" />
+          <div>
+            <button
+              onClick={() => {
+                setImagePreview(null);
+                inputRef.current.value = "";
+              }}
+            >
+              Cancel
+            </button>
+            {isUploading ? (
+              <LoadingBtn />
+            ) : (
+              <button onClick={uploadImage}>upload</button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Profile Con Reziser */}
       <div id="profileConReziser" onMouseDown={resize}></div>
     </div>
   );

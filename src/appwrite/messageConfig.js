@@ -74,7 +74,10 @@ class messageConfig {
             "databases.*.collections.*.documents.*.create"
           )
         ) {
-          if (response.payload.contact1 === userId || response.payload.contact2 === userId){
+          if (
+            response.payload.contact1 === userId ||
+            response.payload.contact2 === userId
+          ) {
             callBack(response.payload);
           }
         }

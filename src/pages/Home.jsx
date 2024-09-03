@@ -7,6 +7,7 @@ import authService from "../appwrite/authConfig";
 import messageService from "../appwrite/messageConfig";
 import { ContactCard } from "../components";
 import { setNewConversation, updateMessage } from "../store/messageSlice";
+import { ID } from "appwrite";
 
 const Home = () => {
   const { messages: allMessages } = useSelector((state) => state.message);
@@ -28,8 +29,12 @@ const Home = () => {
     }
 
     try {
-      const userDetails = await authService.getUserData(searchUsername);
+      const userDetails = await authService.getUser(searchUsername);
       if (userDetails) {
+        if(userDetails.imageId){
+          const imagePreview = authService.getImage(userDetails.imageId)
+          userDetails.imageUrl = imagePreview
+        }
         setSearchUser(userDetails);
       }
     } catch (error) {
@@ -43,6 +48,7 @@ const Home = () => {
     const messageObj = {
       username: searchUser.username,
       fullName: searchUser.fullName,
+      imageUrl: searchUser.imageUrl,
       messages: [],
     };
     setCurrentMessage(messageObj);
@@ -161,13 +167,13 @@ const Home = () => {
           {searchUser ? (
             <ContactCard
               data={searchUser}
-              avterLogo={searchUser && avterLogo}
+              avterLogo={searchUser.imageUrl || avterLogo}
               onClick={() => addContact(searchUser)}
             />
           ) : (
             allMessages.map((message, i) => (
               <ContactCard
-                avterLogo={avterLogo}
+                avterLogo={message.imageUrl || avterLogo}
                 data={message}
                 onClick={() => setCurrentMessage(message)}
                 key={message.username}
@@ -195,11 +201,11 @@ const Home = () => {
             {currentMessage.messages.map((message) => (
               <div
                 className={`messageHold ${
-                  message.senderId === currentUser.username
+                  message?.senderId === currentUser?.username
                     ? "ownMes"
                     : "othersMes"
                 }`}
-                key={crypto.randomUUID()}
+                key={ID.unique()}
               >
                 {message.text}
               </div>

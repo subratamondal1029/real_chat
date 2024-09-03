@@ -1,7 +1,8 @@
-import { Account, Client, ID, Databases } from "appwrite";
+import { Account, Client, ID, Databases, Storage } from "appwrite";
 import {
   databaseId,
   messagesCollectionId,
+  profileBucket,
   projectEndpoint,
   projectId,
   usersCollectionId,
@@ -11,10 +12,12 @@ class authConfig {
   client = new Client();
   account;
   database;
+  storage;
   constructor() {
     this.client.setEndpoint(projectEndpoint).setProject(projectId);
     this.account = new Account(this.client);
     this.database = new Databases(this.client);
+    this.storage = new Storage(this.client);
   }
 
   async signupWithEmail({ email, password, fullName, username }) {
@@ -114,13 +117,25 @@ class authConfig {
     }
   }
 
-  async getUserData(userId){
+  async getUser(contact1, contact2, currentUserId) {
+    let userId;
+    if (contact1 !== currentUserId) {
+      userId = contact1;
+    } else if (contact2 !== currentUserId) {
+      userId = contact2;
+    }
+
     try {
-      const userData = await this.database.getDocument(databaseId, usersCollectionId, userId);
-      return userData;
+      const otherUserData = await this.database.getDocument(databaseId, usersCollectionId, userId);
+      
+      return {
+        userId,
+        fullName: otherUserData.fullName,
+        imageId: otherUserData.imageId,
+        username: otherUserData.username
+      };
     } catch (error) {
-      console.log("Get user data error:", error);
-      throw error
+      throw error;
     }
   }
 
@@ -138,6 +153,22 @@ class authConfig {
     try {
       const changeEmail = await this.account.updateEmail(email, password)
       const userData = await this.database.updateDocument(databaseId, usersCollectionId, changeEmail.$id, {email: email})
+      return userData
+    } catch (error) {
+      throw error.message
+    }
+  }
+
+  getImage(imageId, size={w: 100, h: 100}) {
+    return this.storage.getFilePreview(profileBucket, imageId, size.w, size.h).href;
+  }
+
+  async updateImage(imageId, userId, file, type="update"){
+    try {
+      if(type === "update") await this.storage.deleteFile(profileBucket, imageId)
+      const fileUpload = await this.storage.createFile(profileBucket, ID.unique(), file)
+      if(!fileUpload) throw "File upload error"
+      const userData = await this.database.updateDocument(databaseId, usersCollectionId, userId, {imageId: fileUpload.$id})
       return userData
     } catch (error) {
       throw error.message
