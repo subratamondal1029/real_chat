@@ -2,7 +2,7 @@ import { ArrowLeft, Link, Search, Send, X } from "lucide-react";
 import avterLogo from "../assets/images/userAvter.png";
 import "../Css/home.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import authService from "../appwrite/authConfig";
 import messageService from "../appwrite/messageConfig";
 import { ContactCard } from "../components";
@@ -18,6 +18,7 @@ const Home = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [searchUsername, setSearchUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const conversetionCon = useRef(null);
 
   const dispath = useDispatch();
 
@@ -126,6 +127,11 @@ const Home = () => {
         prev
       );
     });
+
+    if (conversetionCon.current) {
+      conversetionCon.current.scrollTo(0, conversetionCon.current.scrollHeight);
+      document.title = "Messages | RealChat"
+    }else document.title = "RealChat | A realtime chat application"
   }, [allMessages, currentMessage]);
 
   useEffect(() => {
@@ -197,7 +203,7 @@ const Home = () => {
               Last Message: {currentMessage?.lastMessagetime}
             </div>
           </div>
-          <div className="conversetionCon">
+          <div className="conversetionCon" ref={conversetionCon}>
             {currentMessage.messages.map((message) => (
               <div
                 className={`messageHold ${
@@ -216,6 +222,9 @@ const Home = () => {
               placeholder="Enter Message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              onKeyUp={(e) =>{
+               if(e.ctrlKey && e.key === "Enter") sendMessage()
+              }}
               maxLength="999"
             ></textarea>
             <button

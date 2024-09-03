@@ -24,6 +24,7 @@ const SignUp = () => {
     if (isLogin) {
       navigate("/")
     }
+    document.title = "Signup | RealChat"
   },[])
 
   const handleChange = (e) => {

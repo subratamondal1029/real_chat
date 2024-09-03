@@ -29,6 +29,7 @@ const Profile = () => {
     if(userData.imageId && !userData.imageUrl) {
       getProfileImage(userData.imageId);
     }
+    document.title = "Profile | RealChat";
   },[])
 
   function getProfileImage(imageId) {

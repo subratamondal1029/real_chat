@@ -21,6 +21,7 @@ const Login = () => {
     if (isLogin) {
       navigate("/")
     }
+    document.title = "Login | RealChat"
   },[])
 
   const validateConditaions = {
