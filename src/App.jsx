@@ -57,7 +57,11 @@ function App() {
           message.contact2,
           userData.$id
         );
-        dispatch(setNewConversation({ username, fullName, ...messageObj, imageUrl: authService.getImage(imageId) }));
+
+        messageObj.username = username;
+        messageObj.fullName = fullName;
+        if(imageId)messageObj.imageUrl = authService.getImage(imageId)
+        dispatch(setNewConversation(messageObj));
       }
   };
 
