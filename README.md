@@ -2,7 +2,7 @@
 
 Welcome to the Real-Time Chat Application! This project is a full-featured, responsive chat application designed for real-time communication between users. Built using React for the frontend and Appwrite for backend services, this application offers a seamless and intuitive chat experience.
 
-[![Watch the video](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://youtu.be/VIDEO_ID)
+[![Watch the video](https://img.youtube.com/vi/wpQiAv-VN5o/maxresdefault.jpg)](https://youtu.be/wpQiAv-VN5o)
 
 ## Test Users
 
