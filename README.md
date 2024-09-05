@@ -23,8 +23,7 @@ Welcome to the Real-Time Chat Application! This project is a full-featured, resp
 - **Profile Management**: Users can update their profile details, including profile picture and status.
 - **Theme Switcher**: Light and dark mode options for better user experience.
 - **Chat History**: Persistent chat history with the ability to scroll back to previous messages.
-- **Search Functionality**: Easily search for users and chat messages.
-- **Edit and Delete Messages**: Users can edit or delete their messages.
+- **Search Functionality**: Easily search for users.
 
 ## Technologies Used
 
@@ -47,17 +46,14 @@ Welcome to the Real-Time Chat Application! This project is a full-featured, resp
 
 ## Future Enhancements
 
-- **Notifications**: Real-time notifications for new messages.
-- **Typing Indicators**: See when the other person is typing.
 - **Delivery Status**: Message sent, delivered, and read indicators.
+- **Edit and Delete Messages**: Users can edit or delete their messages.
+- **Notifications**: Real-time notifications for new messages.
 - **File Sharing**: Allow users to share images, documents, and other files.
-- **Video/Voice Calls**: Integrate real-time video and voice calling features.
-- **Advanced Search**: Implement more robust search functionality.
-- **Push Notifications**: Add browser push notifications for new messages.
 
 ## Contact
 
 - **Phone**: +91 9832674420
 - **Email**: subratamondal1020@outlook.com
 - **Portfolio Website**: [subratamondal.vercel.app](https://subratamondal.vercel.app)
-- **GitHub Issues**: Raise issues on the [GitHub repository](https://github.com/subratamondal1029/realtime-chat-app).
+- **Projects**: [subrataproject.vercel.app](https://project.vercel.app)
