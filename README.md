@@ -15,8 +15,6 @@ Welcome to the Real-Time Chat Application! This project is a full-featured, resp
   - Password: subratalog
 
 - **User 3**:  (if need you can signup also)
-  - Email: subrata3@chatapp.com  
-  - Password: subratalog
 
 ## Features
 
